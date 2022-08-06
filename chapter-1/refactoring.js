@@ -1,5 +1,5 @@
-const mockInvoice = require('./mocks/invoices.json');
-const mockPlays = require('./mocks/plays.json');
+const invoice = require('./mocks/invoices.json');
+const plays = require('./mocks/plays.json');
 
 function amountFor(aPerformance, play) {
   let result = 0;
@@ -23,7 +23,11 @@ function amountFor(aPerformance, play) {
   return result;
 }
 
-function statement(invoice, plays) {
+function playFor(aPerformance) {
+  return plays[aPerformance.playID];
+}
+
+function statement(invoice) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
@@ -34,7 +38,7 @@ function statement(invoice, plays) {
   });
 
   for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
+    const play = playFor(perf);
     let thisAmount = amountFor(perf, play);
   
     // add volume credits
@@ -50,5 +54,5 @@ function statement(invoice, plays) {
   return result;
 }
 
-console.log(statement(mockInvoice, mockPlays))
+console.log(statement(invoice))
 
