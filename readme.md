@@ -8,18 +8,18 @@ Organizei o conteúdo por capítulos com o código original no arquivo ```index.
 e o código refatorado no arquivo ```refactoring.js``` além disso o resumo da Refatoração
 está descrito em um arquivo *readme* em cada pasta do capítulo.
 
-- [] **Capítulo 1** | [Refatorção: primeiro exemplo](https://github.com/gabrielcaiana/refactoring-book-martin-fowler/tree/master/chapter-1) 🚧
-- [] **Capítulo 2** | Princípios da refatoração
-- [] **Capítulo 3** | "Maus cheiros" no código
-- [] **Capítulo 4** | Escrevendo testes
-- [] **Capítulo 5** | Apresentação do catálogo
-- [] **Capítulo 6** | Primeiro conjunto de refatorações
-- [] **Capítulo 7** | Encapsulamento
-- [] **Capítulo 8** | Movendo recursos
-- [] **Capítulo 9** | Organizando dados
-- [] **Capítulo 10** | Simplificando lógicas condicionais
-- [] **Capítulo 11** | Refatorando APIs
-- [] **Capítulo 12** | Lidando com herança
+- [ ] **Capítulo 1** | [Refatorção: primeiro exemplo](https://github.com/gabrielcaiana/refactoring-book-martin-fowler/tree/master/chapter-1) 🚧
+- [ ] **Capítulo 2** | Princípios da refatoração
+- [ ] **Capítulo 3** | "Maus cheiros" no código
+- [ ] **Capítulo 4** | Escrevendo testes
+- [ ] **Capítulo 5** | Apresentação do catálogo
+- [ ] **Capítulo 6** | Primeiro conjunto de refatorações
+- [ ] **Capítulo 7** | Encapsulamento
+- [ ] **Capítulo 8** | Movendo recursos
+- [ ] **Capítulo 9** | Organizando dados
+- [ ] **Capítulo 10** | Simplificando lógicas condicionais
+- [ ] **Capítulo 11** | Refatorando APIs
+- [ ] **Capítulo 12** | Lidando com herança
 
 
 ### Erro?
