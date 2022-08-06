@@ -79,21 +79,21 @@ Extraíndo o método switch para um função isolada cujo a responsabilidade ser
 no final:
 
 ```javascript
-  function amountFor(aPerformance, play) {
+  function amountFor(perf, play) {
     let result = 0;
     switch (play.type) {
       case 'tragedy':
         result = 40000;
-        if (aPerformance.audience > 30) {
-          result += 1000 * (aPerformance.audience - 30);
+        if (perf.audience > 30) {
+          result += 1000 * (perf.audience - 30);
         }
         break;
       case 'comedy':
         result = 30000;
-        if (aPerformance.audience > 20) {
-          result += 10000 + 500 * (aPerformance.audience - 20);
+        if (perf.audience > 20) {
+          result += 10000 + 500 * (perf.audience - 20);
         }
-        result += 300 * aPerformance.audience;
+        result += 300 * perf.audience;
         break;
       default:
         throw new Error(`unknown type: ${play.type}`);
@@ -134,4 +134,189 @@ com isso a função statement vai utilizá-lo da seguinte forma:
     return result;
   }
 ```
+
+----
+
+Para aplicar mais clareza a função ```amountFor``` altero o nome da variável ```thisAmount``` para ```result```
+com isso fica claro o papel dela dentro da função:
+
+```javascript
+ function amountFor(perf, play) {
+    let result = 0;
+    switch (play.type) {
+      case 'tragedy':
+        result = 40000;
+        if (perf.audience > 30) {
+          result += 1000 * (perf.audience - 30);
+        }
+        break;
+      case 'comedy':
+        result = 30000;
+        if (perf.audience > 20) {
+          result += 10000 + 500 * (perf.audience - 20);
+        }
+        result += 300 * perf.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${play.type}`);
+    }
+    return result;
+  }
+```
+
+O próximo passo é alterar o nome do parâmetro ```perf``` para ```aPerformance``` com isso
+fica mais claro qual é seu papel dentro da função:
+
+```javascript
+ function amountFor(aPerformance, play) {
+    let result = 0;
+    switch (play.type) {
+      case 'tragedy':
+        result = 40000;
+        if (aPerformance.audience > 30) {
+          result += 1000 * (aPerformance.audience - 30);
+        }
+        break;
+      case 'comedy':
+        result = 30000;
+        if (aPerformance.audience > 20) {
+          result += 10000 + 500 * (aPerformance.audience - 20);
+        }
+        result += 300 * aPerformance.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${play.type}`);
+    }
+    return result;
+  }
+```
+
+### Removendo a variável play
+
+observando os parâmetros de ```amountFor```, observa-se de onde eles vêm, ```aPerformance```
+é proveniente da variável do laço, portanto mudará naturalmente a cada iteração. Entretando,
+```play``` é obtido da apresentação, portanto não é necessário passá-lo como parâmetro.
+Podemos simplesmente o recalcular em ```amountFor```.
+
+```javascript
+  function playFor(aPerformance) {
+    return plays[aPerformance.playID];
+  }
+```
+
+Com isso agora a função ```statement``` fica da seguinte forma:
+
+```javascript
+  function statement(invoice) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    const format = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    });
+
+    for (let perf of invoice.performances) {
+      const play = playFor(perf);
+      let thisAmount = amountFor(perf, play);
+    
+      // add volume credits
+      volumeCredits += Math.max(perf.audience - 30, 0);
+      // add extra credit for every ten comedy attendees
+      if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+      // print line for this order
+      result += ` ${play.name}: ${format.format(thisAmount / 100)} (${perf.audience} seats)\n`;
+      totalAmount += thisAmount;
+    }
+    result += `Amount owed is ${format.format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+  }
+```
+
+Podemos melhorar mais ainda a função ```statement``` removendo o parâmetro ```play``` e
+mudando para **declaração de função** em ```amountFor```, com isso a função fica da seguinte forma:
+
+```javascript
+function amountFor(aPerformance) {
+  let result = 0;
+  switch (playFor(aPerformance).type) {
+    case 'tragedy':
+      result = 40000;
+      if (aPerformance.audience > 30) {
+        result += 1000 * (aPerformance.audience - 30);
+      }
+      break;
+    case 'comedy':
+      result = 30000;
+      if (aPerformance.audience > 20) {
+        result += 10000 + 500 * (aPerformance.audience - 20);
+      }
+      result += 300 * aPerformance.audience;
+      break;
+    default:
+      throw new Error(`unknown type: ${playFor(aPerformance).type.type}`);
+  }
+  return result;
+}
+```
+
+```javascript
+  function statement(invoice) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    const format = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    });
+
+    for (let perf of invoice.performances) {
+      let thisAmount = amountFor(perf);
+    
+      // add volume credits
+      volumeCredits += Math.max(perf.audience - 30, 0);
+      // add extra credit for every ten comedy attendees
+      if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+      // print line for this order
+      result += ` ${playFor(perf).name}: ${format.format(thisAmount / 100)} (${perf.audience} seats)\n`;
+      totalAmount += thisAmount;
+    }
+    result += `Amount owed is ${format.format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+  }
+```
+
+Por fim podemos remover a variável local ```thisAmount``` e utilizar do conceito de
+**internalizar variável (inline variable)** com isso o código fica da seguinte forma:
+
+```javascript
+  function statement(invoice) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    const format = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    });
+
+    for (let perf of invoice.performances) {  
+      // add volume credits
+      volumeCredits += Math.max(perf.audience - 30, 0);
+      // add extra credit for every ten comedy attendees
+      if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+      // print line for this order
+      result += ` ${playFor(perf).name}: ${format.format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+      totalAmount += amountFor(perf);
+    }
+    result += `Amount owed is ${format.format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+  }
+```
+
 
