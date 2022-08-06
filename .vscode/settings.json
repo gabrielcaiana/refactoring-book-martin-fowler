@@ -1,0 +1,10 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "prettier.semi": false,
+  "[javascript]": {
+    "editor.tabSize": 2
+  }
+}
